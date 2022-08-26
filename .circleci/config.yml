@@ -17,9 +17,9 @@ commands:
             echo "udapeople-backend-<<parameters.workflow-id>>"
             echo "udapeople-backend-${parameters.workflow-id}"
             aws cloudformation delete-stack \
-              --stack-name "udapeople-backend-<<parameters.workflow-id>>"
+              --stack-name "udapeople-backend-${parameters.workflow-id}"
             aws cloudformation delete-stack \
-              --stack-name "udapeople-frontend-<<parameters.workflow-id>>"
+              --stack-name "udapeople-frontend-${parameters.workflow-id}"
 
   # revert-migrations:
   #   description: Revert the last migration if successfully run in the current workflow.
