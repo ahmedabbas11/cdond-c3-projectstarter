@@ -14,7 +14,7 @@
   pre_tasks:
     - name: "wait 600 seconds for target connection to become reachable/usable."
       ansible.builtin.pause:
-        seconds: 600 # todo change this
+        seconds: 60 # todo change this
 
     # python installation steps from here https://linuxhint.com/install-python-ubuntu-22-04/
     # and i converted it to ansible
