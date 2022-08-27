@@ -194,7 +194,6 @@ jobs:
       - image: python:3.8-alpine3.11
     steps:
       - checkout
-      - run: yum install -y tar gzip
       - attach_workspace:
           at: ~/
       # attach workspace
@@ -202,8 +201,10 @@ jobs:
           name: Install dependencies
           command: |
             apk add --no-cache --virtual build-dependencies python3-dev libffi-dev openssl-dev build-base
+            apk add tar gzip 
             pip3 install --upgrade pip
             pip3 install ansible
+            pip3 install --no-cache-dir awscli
             apk add openssh-client
       - add_ssh_keys:
           fingerprints: ["85:e0:6d:d2:1e:4e:ae:80:2a:26:93:90:d6:5a:93:82"] 
