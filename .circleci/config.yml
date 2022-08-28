@@ -295,10 +295,11 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
+      - checkout
       # Add ssh keys with fingerprint
-      # attach workspace
       - add_ssh_keys:
           fingerprints: ["85:e0:6d:d2:1e:4e:ae:80:2a:26:93:90:d6:5a:93:82"] 
+      # attach workspace
       - attach_workspace:
           at: ~/
       - run:
