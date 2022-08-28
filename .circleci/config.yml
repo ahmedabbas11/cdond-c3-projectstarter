@@ -257,12 +257,12 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt-get update
-            apt-get install -y python3-pip python3-dev
-            pip3 install --upgrade pip
-            pip3 install ansible
-            pip3 install --no-cache-dir awscli
-            pip3 install awscli
+            sudo apt-get update
+            sudo apt-get install -y python3-pip python3-dev
+            sudo pip3 install --upgrade pip
+            sudo pip3 install ansible
+            sudo pip3 install --no-cache-dir awscli
+            sudo pip3 install awscli
             aws --version
             # curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
             # . ~/.nvm/nvm.sh
