@@ -288,22 +288,42 @@ jobs:
           workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
       # TODO revert migrations as well    
                     
-#   deploy-backend:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Deploy backend
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure  
+  deploy-backend:
+    docker:
+      # Docker image here that supports Ansible
+      # - image: python:3.8-alpine3.11
+      - image: circleci/node:13.8.0
+    steps:
+      # Checkout code from git
+      # Add ssh keys with fingerprint
+      # attach workspace
+      - add_ssh_keys:
+          fingerprints: ["85:e0:6d:d2:1e:4e:ae:80:2a:26:93:90:d6:5a:93:82"] 
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y python3-pip python3-dev
+            sudo pip3 install --upgrade pip
+            sudo pip3 install ansible
+            sudo pip3 install --no-cache-dir awscli
+            sudo pip3 install awscli
+      - run:
+          name: Deploy backend
+          command: |
+            cd backend
+            npm i
+            npm run build
+            cd ..
+            # Zip the directory
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
+      # Here's where you will add some code to rollback on failure  
 
 #   smoke-test:
 #     docker:
@@ -387,10 +407,10 @@ workflows:
       #     requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [deploy-infrastructure] # todo change this
+      # - deploy-frontend:
       #     requires: [run-migrations]
-      # - deploy-backend:
+      - deploy-backend:
+          requires: [deploy-infrastructure] # todo change this
       #     requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
