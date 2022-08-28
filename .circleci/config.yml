@@ -263,12 +263,6 @@ jobs:
             sudo pip3 install ansible
             sudo pip3 install --no-cache-dir awscli
             sudo pip3 install awscli
-            aws --version
-            # curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-            # . ~/.nvm/nvm.sh
-            # nvm install 13.8.0
-            # node --version
-            # npm --version
       - run:
           name: Get backend url
           command: |
@@ -283,7 +277,6 @@ jobs:
       - run:
           name: Deploy frontend objects
           command: |
-            npm --version
             cd frontend
             npm install
             npm run build
@@ -385,7 +378,7 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      # - deploy-infrastructure
+      - deploy-infrastructure
           # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           # filters:
             # branches:
@@ -394,8 +387,8 @@ workflows:
       #     requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
-      - deploy-frontend
-          # requires: [deploy-infrastructure] # todo change this
+      - deploy-frontend:
+          requires: [deploy-infrastructure] # todo change this
       #     requires: [run-migrations]
       # - deploy-backend:
       #     requires: [run-migrations]
