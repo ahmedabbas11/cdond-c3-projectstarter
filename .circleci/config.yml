@@ -257,7 +257,7 @@ jobs:
           name: Install dependencies
           command: |
             yum update
-            yum install nodejs npm --enablerepo=epel
+            yum install nodejs npm
             yum install python3 python3-pip
       - run:
           name: Get backend url
