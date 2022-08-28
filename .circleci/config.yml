@@ -246,7 +246,7 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS CLI
-      - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
     steps:
       # Checkout code from git
       - checkout
@@ -255,12 +255,10 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --no-cache --virtual build-dependencies python3-dev libffi-dev openssl-dev build-base
-            apk add tar gzip 
-            pip3 install --upgrade pip
-            pip3 install ansible
-            pip3 install --no-cache-dir awscli
-            apk add openssh-client
+            yum update
+            yum install -y tar gzip
+            yum install nodejs npm --enablerepo=epel
+            yum install python3 python3-pip
       - run:
           name: Get backend url
           command: |
@@ -375,7 +373,7 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      - deploy-infrastructure
+      # - deploy-infrastructure
           # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           # filters:
             # branches:
@@ -384,8 +382,8 @@ workflows:
       #     requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [deploy-infrastructure] # todo change this
+      - deploy-frontend
+          # requires: [deploy-infrastructure] # todo change this
       #     requires: [run-migrations]
       # - deploy-backend:
       #     requires: [run-migrations]
