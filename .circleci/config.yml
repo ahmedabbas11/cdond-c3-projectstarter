@@ -228,6 +228,13 @@ jobs:
       # Checkout code from git
       - checkout
       - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y python3-pip python3-dev
+            sudo pip3 install --upgrade pip
+            sudo pip3 install awscli
+      - run:
           name: Run migrations
           command: |
             cd backend
@@ -263,7 +270,6 @@ jobs:
             sudo apt-get install -y python3-pip python3-dev
             sudo pip3 install --upgrade pip
             sudo pip3 install ansible
-            sudo pip3 install --no-cache-dir awscli
             sudo pip3 install awscli
       - run:
           name: Get backend url
