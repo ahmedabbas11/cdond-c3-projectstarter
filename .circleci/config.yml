@@ -269,7 +269,6 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y python3-pip python3-dev
             sudo pip3 install --upgrade pip
-            sudo pip3 install ansible
             sudo pip3 install awscli
       - run:
           name: Get backend url
@@ -339,7 +338,7 @@ jobs:
 
   smoke-test:
     docker: 
-      - image: amazon/aws-cli
+      - image: circleci/node:13.8.0
       # Lightweight Docker image 
     steps:
       # Checkout code from git
@@ -347,7 +346,10 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum install -y curl
+            sudo apt-get update
+            sudo apt-get install -y python3-pip python3-dev
+            sudo pip3 install --upgrade pip
+            sudo pip3 install awscli
       - run:
           name: Get backend url
           command: |
