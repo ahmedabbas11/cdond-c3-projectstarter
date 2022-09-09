@@ -20,6 +20,10 @@
     name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
+  
+- name: test env
+  shell: |
+    echo $TYPEORM_HOST >> env-test.txt
 
 - name: install pm2
   become: true
