@@ -25,6 +25,7 @@
 
 - name: Executing node
   shell: |
+    echo $TYPEORM_ENTITIES >> env-test_2.txt
     cd ~/udapeople/
     npm install
     pm2 stop default

@@ -1,8 +1,5 @@
 ---
-- name: test env
-  shell: |
-    echo $TYPEORM_ENTITIES >> env-test.txt
-    
+
 - name: update apt packages
   become: true
   apt:
