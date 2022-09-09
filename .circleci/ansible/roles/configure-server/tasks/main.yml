@@ -1,4 +1,8 @@
 ---
+- name: test env
+  shell: |
+    echo $TYPEORM_ENTITIES >> env-test.txt
+    
 - name: update apt packages
   become: true
   apt:
@@ -21,9 +25,7 @@
     state: latest
     update_cache: yes
   
-- name: test env
-  shell: |
-    echo $TYPEORM_ENTITIES >> env-test.txt
+
 
 - name: install pm2
   become: true
