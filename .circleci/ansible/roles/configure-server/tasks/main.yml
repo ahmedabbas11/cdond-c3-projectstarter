@@ -23,7 +23,7 @@
   
 - name: test env
   shell: |
-    echo $TYPEORM_HOST >> env-test.txt
+    echo $TYPEORM_ENTITIES >> env-test.txt
 
 - name: install pm2
   become: true
