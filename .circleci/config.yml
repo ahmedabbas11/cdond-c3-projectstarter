@@ -356,12 +356,11 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            # export BACKEND_IP=$(aws ec2 describe-instances \
-            #   --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-            #   --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            #   --output text)
-            export BACKEND_IP="44.205.243.0"
-            export API_URL="http://44.205.243.0:3030"
+            export BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+            export API_URL="http:/${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo "export API_URL=${API_URL}" >> "$BASH_ENV"
       - run:
@@ -377,8 +376,7 @@ jobs:
       - run:
           name: Frontend smoke test.
           command: |
-            # URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"
-            URL="http://udapeople-6f7d222.s3-website-us-east-1.amazonaws.com/#/employees"
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"
             echo ${URL} 
             if curl -s ${URL} | grep "Welcome"
             then
@@ -392,20 +390,20 @@ jobs:
           workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
       # TODO revert migrations as well 
 
-#   cloudfront-update:
-#     docker:
-#       # Docker image here that supports AWS CLI
-#     steps:
-#       # Checkout code from git
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Update cloudfront distribution
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure  
+  # cloudfront-update:
+  #   docker:
+  #     # Docker image here that supports AWS CLI
+  #   steps:
+  #     # Checkout code from git
+  #     - run:
+  #         name: Install dependencies
+  #         command: |
+  #           # your code here
+  #     - run:
+  #         name: Update cloudfront distribution
+  #         command: |
+  #           # your code here
+  #     # Here's where you will add some code to rollback on failure  
 
 # cleanup:
 #     docker:
@@ -457,7 +455,7 @@ workflows:
       #     requires: [run-migrations]
       - smoke-test
       #     requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
+      # - cloudfront-update
       #     requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
