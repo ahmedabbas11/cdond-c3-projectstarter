@@ -21,24 +21,23 @@ commands:
             aws cloudformation delete-stack \
               --stack-name "udapeople-frontend-<<parameters.workflow-id>>"
 
-  # revert-migrations:
-  #   description: Revert the last migration if successfully run in the current workflow.
-  #   parameters:
-  #     # Add parameter here     
-  #   steps:
-  #     - run:
-  #         name: Revert migrations
-  #         # Add when this will run
-  #         command: |
-  #           # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-  #           SUCCESS = 1
-  #           if(( $SUCCESS==1 )); 
-  #           then
-  #           #  cd ~/project/backend
-  #           #  npm install
-  #           #  Add revert code here. You can find this in the Getting Started section.
-  #             exit 1
-  #           fi
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      workflow_id:
+        type: string     
+    steps:
+      - run:
+          name: Revert migrations
+          # Add when this will run
+          command: |
+            SUCCESS=$(curl --insecure  https://kvdb.io/4Md9ThMoNJb7irh1Fjq1Br/migration_<< parameters.workflow_id >>)
+            if (( $SUCCESS == 1 ));
+            then
+                cd ~/project/backend
+                npm install
+                npm run migration:revert
+            fi 
             
 jobs:
   build-frontend:
@@ -251,6 +250,8 @@ jobs:
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   deploy-frontend:
     docker:
@@ -293,7 +294,9 @@ jobs:
       # Here's where you will add some code to rollback on failure 
       - destroy-environment:
           workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
-      # TODO revert migrations as well    
+      # revert migrations as well 
+      - revert-migrations:
+          workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}   
                     
   deploy-backend:
     docker:
@@ -334,7 +337,9 @@ jobs:
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
-      # TODO revert migrations as well  
+      # revert migrations as well 
+      - revert-migrations:
+          workflow-id: ${CIRCLE_WORKFLOW_ID:0:7} 
 
   smoke-test:
     docker: 
@@ -353,6 +358,7 @@ jobs:
             apk add --no-cache python3 py3-pip
             pip3 install --upgrade pip
             pip3 install awscli
+            apk add --update nodejs npm
       - run:
           name: Get backend url
           command: |
@@ -388,7 +394,9 @@ jobs:
       # Here's where you will add some code to rollback on failure  
       - destroy-environment:
           workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
-      # TODO revert migrations as well 
+      # revert migrations as well 
+      - revert-migrations:
+          workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   # cloudfront-update:
   #   docker:
@@ -428,34 +436,33 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend:
-          context:
-            - slack
-      - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-      - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters:
-            branches:
-              only: [master]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
+      # - build-frontend:
+      #     context:
+      #       - slack
+      # - build-backend
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      # - scan-backend:
+      #     requires: [build-backend]
+      # - scan-frontend:
+      #     requires: [build-frontend]
+      # - deploy-infrastructure:
+      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      #     filters:
+      #       branches:
+      #         only: [master]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
       # - deploy-frontend:
       #     requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend]
-      #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update
       #     requires: [smoke-test]
       # - cleanup:
