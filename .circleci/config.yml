@@ -24,14 +24,14 @@ commands:
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-      workflow_id:
+      workflow-id:
         type: string     
     steps:
       - run:
           name: Revert migrations
           # Add when this will run
           command: |
-            SUCCESS=$(curl --insecure  https://kvdb.io/4Md9ThMoNJb7irh1Fjq1Br/migration_<< parameters.workflow_id >>)
+            SUCCESS=$(curl --insecure  https://kvdb.io/4Md9ThMoNJb7irh1Fjq1Br/migration_<< parameters.workflow-id >>)
             if (( $SUCCESS == 1 ));
             then
                 cd ~/project/backend
