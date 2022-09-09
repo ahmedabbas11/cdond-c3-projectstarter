@@ -347,8 +347,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            sudo apt-get update
-            sudo pip3 install curl
+            yum install -y curl
       - run:
           name: Get backend url
           command: |
