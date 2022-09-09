@@ -340,6 +340,9 @@ jobs:
     docker: 
       - image: alpine:latest
       # Lightweight Docker image 
+    shell: /bin/sh -leo pipefail
+    environment:
+      BASH_ENV: /etc/profile
     steps:
       # Checkout code from git
       - checkout
