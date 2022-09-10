@@ -41,7 +41,7 @@ commands:
                 echo "reverting ..."
                 cd backend
                 npm install
-                ls
+                pwd
                 npm run migrations:revert
             fi 
             
