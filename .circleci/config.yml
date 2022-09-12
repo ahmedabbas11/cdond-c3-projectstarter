@@ -460,34 +460,33 @@ workflows:
       - build-frontend:
           context:
             - slack
-      # - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
-      # - test-backend:
-      #     requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
-      - deploy-infrastructure:
+      - build-backend:
+          context:
+              - slack
+      - test-frontend:
           requires: [build-frontend]
-          # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           filters:
             branches:
               only: [master]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
-      - deploy-frontend:
+      - configure-infrastructure:
           requires: [deploy-infrastructure]
-          # requires: [run-migrations]
-      # - deploy-backend:
-      #     requires: [run-migrations]
-      # - smoke-test:
-      #     requires: [deploy-backend]
+      - run-migrations:
+          requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
+      - smoke-test:
+          requires: [deploy-backend]
       - cloudfront-update:
-          requires: [deploy-frontend]
-          # requires: [smoke-test]
+          requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
