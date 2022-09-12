@@ -47,10 +47,21 @@ commands:
             
 jobs:
   build-frontend:
-    docker:
-      - image: circleci/node:13.8.0
+    docker: 
+      - image: alpine:latest
+    shell: /bin/sh -leo pipefail
+    environment:
+      BASH_ENV: /etc/profile
     steps:
       - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update curl
+            apk add --no-cache python3 py3-pip
+            pip3 install --upgrade pip
+            pip3 install awscli
+            apk add --update nodejs npm
       - restore_cache:
           keys: [frontend-build]
       - run:
