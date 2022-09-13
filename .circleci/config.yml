@@ -470,7 +470,6 @@ jobs:
       - run:
           name: Get old stack workflow id
           command: |
-            bash
             # Fetch the Old workflow ID
             export OldWorkflowID=$(curl --insecure  https://kvdb.io/4Md9ThMoNJb7irh1Fjq1Br/old_workflowId)
             echo OldWorkflowID: "${OldWorkflowID}"
